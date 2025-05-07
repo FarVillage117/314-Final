@@ -53,4 +53,14 @@ public class NotifManager : MonoBehaviour
         ++taskNum;
         notify();
     }
+
+    public void SwordGrabbed()
+    {
+        Debug.Log("Sword Grabbed");
+    }
+
+    public void SwordReleased()
+    {
+        Debug.Log("Sword Released");
+    }
 }
