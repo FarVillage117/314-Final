@@ -19,6 +19,7 @@ public class NotifManager : MonoBehaviour
     List<TextMeshProUGUI> notificationText = new List<TextMeshProUGUI> ();
     List<TextMeshProUGUI> buttonText = new List<TextMeshProUGUI>();
 
+    [SerializeField] Rigidbody rigidbodyObjectiveDoor;
     bool usedWeapon = false;
 
     // Start is called before the first frame update
@@ -87,13 +88,21 @@ public class NotifManager : MonoBehaviour
         {
             MoveToNextTask();
         }
-        else if (taskNum == 1 && usedWeapon)
+        else if (taskNum == 1 && !rigidbodyObjectiveDoor.isKinematic)
+        {
+            MoveToNextTask();
+        }
+        else if (taskNum == 2 && usedWeapon)
         {
             MoveToNextTask();
         }
         else
         {
-            MoveToNextTask();
+            if (taskNum + 1 >= notificationString.Length || taskNum >= buttonString.Length)
+            {
+                taskNum = 0;
+                ReloadScene();
+            }
         }
     }
 

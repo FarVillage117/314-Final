@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class BaseWeapon : MonoBehaviour
+public class DoorHandleAudio : MonoBehaviour
 {
-    NotifManager notifManager;
+    [SerializeField] AudioSource handleAudio;
+    [SerializeField] AudioSource doorAudio;
+
     [SerializeField] XRGrabInteractable interactable;
 
     // Start is called before the first frame update
     void Start()
     {
-        notifManager = FindObjectOfType<NotifManager>();
+        handleAudio = GetComponent<AudioSource>();
+        interactable = GetComponent<XRGrabInteractable>();
+
         if (interactable != null)
         {
             interactable.selectEntered.AddListener(OnGrabbed);
@@ -22,11 +25,15 @@ public class BaseWeapon : MonoBehaviour
 
     public void OnGrabbed(SelectEnterEventArgs arg0)
     {
-        notifManager.InteractedWithWeapon(0);
+        handleAudio.Stop();
+        doorAudio.Stop();
+
+        handleAudio.Play();
+        doorAudio.Play();
     }
 
     public void OnReleased(SelectExitEventArgs arg0)
     {
-        notifManager.InteractedWithWeapon(1);
+        handleAudio.Stop();
     }
 }
