@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class NotifManager : MonoBehaviour
@@ -14,12 +15,29 @@ public class NotifManager : MonoBehaviour
     //Only change in editor, not during runtime
     [SerializeField] int taskNum = 0;
 
-    [SerializeField] TextMeshProUGUI notificationText;
-    [SerializeField] TextMeshProUGUI buttonText;
+    TextMeshProUGUI[] tmpsUGUI;
+    List<TextMeshProUGUI> notificationText = new List<TextMeshProUGUI> ();
+    List<TextMeshProUGUI> buttonText = new List<TextMeshProUGUI>();
+
+    bool usedWeapon = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        tmpsUGUI = FindObjectsOfType<TextMeshProUGUI>();
+
+        foreach (TextMeshProUGUI textbox in tmpsUGUI)
+        {
+            if (textbox.CompareTag("UiTextNotification"))
+            {
+                notificationText.Add(textbox);
+            }
+            if (textbox.CompareTag("UiTextButton"))
+            {
+                buttonText.Add(textbox);
+            }
+        }
+
         for (int i = 0; i < notificationString.Length; i++)
         {
             notificationString[i] = notificationString[i].Replace(";", "\n");
@@ -37,9 +55,23 @@ public class NotifManager : MonoBehaviour
         if (taskNum >= notificationString.Length || taskNum >= buttonString.Length)
         {
             taskNum = 0;
+            ReloadScene();
         }
-        notificationText.text = notificationString[taskNum];
-        buttonText.text = buttonString[taskNum];
+
+        foreach (TextMeshProUGUI textbox in notificationText)
+        {
+            textbox.text = notificationString[taskNum];
+        }
+        foreach (TextMeshProUGUI textbox in buttonText)
+        {
+            textbox.text = buttonString[taskNum];
+        }
+    }
+
+    private void ReloadScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
 
     // Update is called once per frame
@@ -51,17 +83,29 @@ public class NotifManager : MonoBehaviour
     //Called whenever pannel button is pressed
     public void OnButtonPressed()
     {
+        if (taskNum == 0)
+        {
+            MoveToNextTask();
+        }
+        else if (taskNum == 1 && usedWeapon)
+        {
+            MoveToNextTask();
+        }
+        else
+        {
+            MoveToNextTask();
+        }
+    }
+
+    private void MoveToNextTask()
+    {
         ++taskNum;
         notify();
     }
 
-    public void GrabbedSword(SelectEnterEventArgs arg)
+    public void InteractedWithWeapon(int type)
     {
-        Debug.Log("Sword Grabbed");
-    }
-
-    public void ReleasedSword(SelectExitEventArgs arg0)
-    {
-        Debug.Log("Sword Released");
+        usedWeapon = true;
+        Debug.Log($"Sword Interacted with type {type} interaction");
     }
 }
