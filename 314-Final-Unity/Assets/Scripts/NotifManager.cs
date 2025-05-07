@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class NotifManager : MonoBehaviour
 {
@@ -52,5 +53,15 @@ public class NotifManager : MonoBehaviour
     {
         ++taskNum;
         notify();
+    }
+
+    public void GrabbedSword(SelectEnterEventArgs arg)
+    {
+        Debug.Log("Sword Grabbed");
+    }
+
+    public void ReleasedSword(SelectExitEventArgs arg0)
+    {
+        Debug.Log("Sword Released");
     }
 }
